@@ -1,0 +1,52 @@
+close all
+clear
+clc %//static to dynamic
+WeightVector = rand(4,1)%Initialize weights
+Rate = 0.05; %Initialize the Learning Rate
+NumExemplars =8; %Define the number of training exemplars used
+ExemplarSet = [1 0 0 0;1 0 0 1;1 0 1 0;1 0 1 1;1 1 0 0;1 1 0 1;1 1 1 0;1 1 1 1]; %Create as many exemplars
+for p=1:80 % Training Phase Begins Here
+ExemplarNumber =ceil(NumExemplars*rand); % Pick a random exemplar ID
+Input_Vector = ExemplarSet(ExemplarNumber,:);% Apply that exemplar
+output = Input_Vector*WeightVector;%Determine the weighted sum
+output
+if output>=WeightVector(1)
+output=1;
+else
+output=0;
+end%Apply the activation function, determine the output
+if Input_Vector(4)-Input_Vector(3)-Input_Vector(2)>WeightVector(1)
+Target = 1;
+else
+Target = 0;
+end%Determine the target output for the particular exemplar
+WeightVector = WeightVector+(2*Rate*(Target-output).*Input_Vector)';
+error(p) = Target-output;
+end
+figure
+bar(error,'r')
+figure
+for p=1:4 %Testing Phase Begin Here
+s= [1 0 0 0;1 1 1 1];
+t=ceil(rand*2)
+Input_Vector =s(t,:);%Generate a random exemplar
+output = Input_Vector*WeightVector; %Determine the weighted sum
+disp('testing')
+output
+if output>=WeightVector(1)
+output=1;
+plot3(Input_Vector(2),Input_Vector(3),Input_Vector(4),'b*','linewidth',3)
+else
+output=0;
+plot3(Input_Vector(2),Input_Vector(3),Input_Vector(4),'r*','linewidth',3)
+end %Determine the output and plot it appropriately
+hold on
+grid on
+x1 = -20:0.01:20;
+x2 = -20:0.01:20;
+y = x1+x2+WeightVector(1);
+plot3(x1,x2,y,'m-','linewidth',2);%Plot the decision boundary
+axis([0 1 0 1 0 1]);
+Neural Network and Deep learning Algorithm Page 23
+end
+WeightVector
